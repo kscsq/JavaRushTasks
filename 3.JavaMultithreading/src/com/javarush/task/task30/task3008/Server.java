@@ -40,6 +40,13 @@ public class Server {
             connection.send(new Message(MessageType.NAME_ACCEPTED));
             return answer.getData();
         }
+
+        private void sendListOfUsers(Connection connection, String userName)throws IOException{
+            for (Map.Entry<String, Connection> m : connectionMap.entrySet()){
+                if (!m.getKey().equals(userName))
+                    connection.send(new Message(MessageType.USER_ADDED, m.getKey()));
+            }
+        }
     }
 
     public static void main(String[] args) {
