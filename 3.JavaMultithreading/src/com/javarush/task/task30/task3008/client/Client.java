@@ -5,35 +5,70 @@ import com.javarush.task.task30.task3008.ConsoleHelper;
 import com.javarush.task.task30.task3008.Message;
 import com.javarush.task.task30.task3008.MessageType;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class Client {
     protected Connection connection;
     private volatile boolean clientConnected = false;
-    public class SocketThread extends Thread{
+
+    public static void main(String[] args) {
+        Client client = new Client();
+        client.run();
+    }
+    public void run() {
+        SocketThread socketThread = getSocketThread();
+        socketThread.setDaemon(true);
+        socketThread.start();
+        synchronized (this) {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                System.out.println("Error " + e);
+                return;
+            }
+        }
+        if (clientConnected)
+            System.out.println("Соединение установлено. Для выхода наберите команду ‘exit’.");
+        else
+            System.out.println("Произошла ошибка во время работы клиента.");
+        String readString = null;
+        while (clientConnected) {
+            readString = ConsoleHelper.readString();
+            if (readString.equals("exit"))
+                break;
+            if (shouldSendTextFromConsole())
+                sendTextMessage(readString);
+        }
+    }
+
+    public class SocketThread extends Thread {
 
     }
-    protected String getServerAddress(){
+
+    protected String getServerAddress() {
         ConsoleHelper.writeMessage("Input server address:");
         return ConsoleHelper.readString();
     }
-    protected int getServerPort(){
+
+    protected int getServerPort() {
         ConsoleHelper.writeMessage("Please enter port number: ");
         return ConsoleHelper.readInt();
     }
-    protected String getUserName(){
+
+    protected String getUserName() {
         ConsoleHelper.writeMessage("Please enter user name: ");
         return ConsoleHelper.readString();
     }
-    protected boolean shouldSendTextFromConsole(){
+
+    protected boolean shouldSendTextFromConsole() {
         return true;
     }
-    protected SocketThread getSocketThread(){
+
+    protected SocketThread getSocketThread() {
         return new SocketThread();
     }
-    protected void sendTextMessage(String text){
+
+    protected void sendTextMessage(String text) {
         try {
             connection.send(new Message(MessageType.TEXT, text));
         } catch (IOException e) {
