@@ -1,12 +1,14 @@
 package com.javarush.task.task31.task3110;
 
+import com.javarush.task.task31.task3110.command.ExitCommand;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
 
 public class Archiver {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("Please enter the destination path: ");//C:\Temp\dest\out.zip
         String destinationPath = null;
@@ -27,9 +29,10 @@ public class Archiver {
         }
 
         try {
-            zipFileManager.createZip(Paths.get(destinationPath));
+            zipFileManager.createZip(Paths.get(sourcePath));
         } catch (Exception e) {
             e.printStackTrace();
         }
+        new ExitCommand().execute();
     }
 }
