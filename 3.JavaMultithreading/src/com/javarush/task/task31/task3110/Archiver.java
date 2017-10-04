@@ -9,18 +9,7 @@ import java.nio.file.Paths;
 public class Archiver {
     public static void main(String[] args) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Please enter the source path: ");
-        String sourcePath = null;
-        try {
-            sourcePath = reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Path sPath = Paths.get(sourcePath);
-        ZipFileManager zipFileManager = new ZipFileManager(sPath);
-
-        System.out.print("Please enter the destination path: ");
+        System.out.print("Please enter the destination path: ");//C:\Temp\dest\out.zip
         String destinationPath = null;
         try {
             destinationPath = reader.readLine();
@@ -28,9 +17,18 @@ public class Archiver {
             e.printStackTrace();
         }
 
-        Path dPath = Paths.get(destinationPath);
+        ZipFileManager zipFileManager = new ZipFileManager(Paths.get(destinationPath));
+
+        System.out.print("Please enter the source path: ");//C:\Temp\source\111.pdf
+        String sourcePath = null;
         try {
-            zipFileManager.createZip(dPath);
+            sourcePath = reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            zipFileManager.createZip(Paths.get(destinationPath));
         } catch (Exception e) {
             e.printStackTrace();
         }
